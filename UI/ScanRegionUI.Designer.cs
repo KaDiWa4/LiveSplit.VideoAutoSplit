@@ -40,6 +40,7 @@
             this.lblPreviewType = new System.Windows.Forms.Label();
             this.lblPreviewFeature = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
+            this.btnSaveImage = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblHeight = new System.Windows.Forms.Label();
             this.lblWidth = new System.Windows.Forms.Label();
@@ -83,6 +84,7 @@
             this.panel1.Controls.Add(this.ckbShowComparison);
             this.panel1.Controls.Add(this.tableLayoutPanel2);
             this.panel1.Controls.Add(this.btnReset);
+            this.panel1.Controls.Add(this.btnSaveImage);
             this.panel1.Controls.Add(this.tableLayoutPanel1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -204,6 +206,15 @@
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
+            // btnSaveImage
+            // 
+            this.btnSaveImage.Location = new System.Drawing.Point(229, 47);
+            this.btnSaveImage.Name = "btnSaveImage";
+            this.btnSaveImage.Size = new System.Drawing.Size(112, 21);
+            this.btnSaveImage.TabIndex = 231;
+            this.btnSaveImage.Text = "Save Image...";
+            this.btnSaveImage.Click += new System.EventHandler(this.btnSaveImage_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -414,6 +425,7 @@
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.ComboBox boxPreviewFeature;
         private System.Windows.Forms.ComboBox boxPreviewType;
+        private System.Windows.Forms.Button btnSaveImage;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label lblDelta;
         private System.Windows.Forms.CheckBox ckbShowComparison;

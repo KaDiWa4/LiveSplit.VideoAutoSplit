@@ -235,6 +235,11 @@ namespace LiveSplit.VAS.UI
             }
         }
 
+        // Some variables for function btnSaveImage_Click
+        private Scan? _LastScan = null;
+        private PreviewType? _LastPreviewType = null;
+        private PreviewFeature _LastFeature = null;
+
         private void RefreshThumbnail(Scan scan)
         {
             PreviewType previewType = PreviewType.FullFrame;
@@ -248,6 +253,11 @@ namespace LiveSplit.VAS.UI
                         feature = (PreviewFeature)boxPreviewFeature.SelectedItem;
                 });
             }
+
+            _LastScan = scan;
+            _LastPreviewType = previewType;
+            _LastFeature = feature;
+
             RefreshThumbnailAsync(scan, previewType, feature);
         }
 
@@ -419,6 +429,68 @@ namespace LiveSplit.VAS.UI
                 lblDelta.Text = confidence;
             });
             _RenderingFrame = false;
+        }
+
+        private void btnSaveImage_Click(object sender, EventArgs e)
+        {
+            if (_LastScan == null)
+            {
+                MessageBox.Show("There is no image to save yet.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var scan = _LastScan.Value;
+            var previewType = _LastPreviewType;
+            var feature = _LastFeature;
+
+            // This is mainly just copied from RefreshThumbnailAsync
+
+            MagickImage mi;
+            Geometry cropGeo = _CropGeometry;
+
+            if (previewType == PreviewType.FullFrame)
+            {
+                mi = new MagickImage(scan.CurrentFrame.Bitmap);
+            }
+            else
+            {
+                Geometry geoThatIsUsedHere;
+
+                // I have no clue where the difference between _CropGeometry and _TrueCropGeometry is
+                if (previewType == PreviewType.FrameCrop)
+                {
+                    geoThatIsUsedHere = cropGeo;
+                }
+                else if (feature == null)
+                {
+                    geoThatIsUsedHere = _TrueCropGeometry;
+                }
+                else
+                {
+                    geoThatIsUsedHere = feature.WatchZone.Geometry;
+                }
+
+                if (!_VideoGeometry.Contains(geoThatIsUsedHere))
+                {
+                    mi = new MagickImage(scan.CurrentFrame.Bitmap);
+                    mi.Extent(geoThatIsUsedHere.ToMagick(), STANDARD_GRAVITY, EXTENT_COLOR);
+                }
+                else
+                {
+                    mi = new MagickImage(scan.CurrentFrame.Bitmap.Clone(geoThatIsUsedHere.ToRectangle(), PixelFormat.Format24bppRgb));
+                }
+            }
+
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "PNG (*.png)|*.png",
+                RestoreDirectory = true
+            };
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                mi.ToBitmap().Save(dialog.FileName, ImageFormat.Png);
+            }
         }
 
         #endregion Thumbnail Rendering
